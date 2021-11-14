@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "261af762-82fe-42be-89ba-1154917d7538",
+		"name": "BillApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							" \r",
+							"pm.collectionVariables.set(\"token\", pm.response.json().token); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "321",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "123",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/Login",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insertBill(purchaserTest/09-1111-1111)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"purchaser\", pm.response.json().purchaser);\r",
+							"pm.collectionVariables.set(\"phone\", pm.response.json().phone);\r",
+							"pm.collectionVariables.set(\"BsonId\", pm.response.json().id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"purchaser\": \"purchaserTest\",\r\n  \"phone\": \"09-0000-0000\",\r\n  \"creationDateTime\": \"2021-10-27T13:13:20.214Z\",\r\n  \"projectList\": [\r\n    {\r\n      \"name\": \"Test\",\r\n      \"unitPrice\": 1,\r\n      \"quantity\": 1,\r\n      \"remark\": \"Test\"\r\n    }\r\n  ],\r\n  \"other\": \"Test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/Record/insertBill",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"Record",
+						"insertBill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/Record/search?phone={{09-1111-1111}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Purchaser is Correct\", function () {\r",
+							"    let thePurchaser =  pm.collectionVariables.get(\"purchaser\");\r",
+							"    pm.expect(pm.response.json()[0].purchaser).to.eql(thePurchaser);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/Record/search?phone={{phone}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"Record",
+						"search"
+					],
+					"query": [
+						{
+							"key": "phone",
+							"value": "{{phone}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteBill?BsonId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Message Delete success.\", function () {\r",
+							"     pm.expect(pm.response.json().message).to.eql(\"Delete success.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{URL}}/Record/deleteBill?id={{BsonId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"Record",
+						"deleteBill"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{BsonId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "https://localhost:44301"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "purchaser",
+			"value": ""
+		},
+		{
+			"key": "phone",
+			"value": ""
+		},
+		{
+			"key": "BsonId",
+			"value": ""
+		}
+	]
+}
